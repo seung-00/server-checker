@@ -103,6 +103,7 @@ class checker:
 	def check_begin(self):
   		for i in range(len(self.work_names)):
 				self.channel.send("cd "+self.dirs[i]+"\n)
+
 				if self.server_name = "항공의무관리":
 						time.sleep(5)
 
@@ -152,7 +153,7 @@ class checker:
 		self.channel.send("find ./ -type f -mtime -1 -exec cat'{}' \;\n")   #가장 최근 파일 실행
 		logs = para_Handle.waitSterams(self.channel)
 		logs = logs.lower()
-		
+
 		if "error" in logs:
 			print("***에러 존재***, 로그를 확인하시오.\n")
 			self._print_log(logs, working_name)
@@ -181,4 +182,4 @@ def execute():
 	print("점검 완료!")
 
 if __name__ = '__main__':
-	execute()
+  execute()
