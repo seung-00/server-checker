@@ -12,6 +12,7 @@ class para_Handle:
 		ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 		ssh_client.connect(IP, port = server_port, uesrname = user_name, passwd = passwd)
 		channeml  =  ssh_client.invoke_shell()
+
 		try:
 			yield channel
 		finally:
@@ -27,6 +28,7 @@ class para_Handle:
 	def waitStreams(channel):
 		time.sleep(1)
 		outdata = errdata = ""
+
 		while channel.recv_ready():
 			try:
 				outdata + =  str(channel.recv(1).decode())
@@ -76,13 +78,14 @@ class connector:
 
 	def connect(self):
 		try:
-          with para_Handle.Shell_connect(self.IP, self.port, self,ID, self.passwd) as channel:
-              time.sleep(3)
-              print("-----------------"+self.server_name+" 연결 성공 -----------------\n\n")
-              Regular_Check = checker(channel, self.server_name, self.work_names, self.dirs)
-              Regular_Check.check_begin()
-      except:
-          pass
+			with para_Handle.Shell_connect(self.IP, self.port, self,ID, self.passwd) as channel:
+				time.sleep(3)
+				print("-----------------"+self.server_name+" 연결 성공 -----------------\n\n")
+				Regular_Check = checker(channel, self.server_name, self.work_names, self.dirs)
+				Regular_Check.check_begin()
+
+		except:
+			pass
 #            print(self.server_name+"접속 실패!")
 
 
@@ -98,17 +101,18 @@ class checker:
 		self.yesterdata = (datetime.datetime.now()-timedelta)
 
 	def check_begin(self):
-		for i in range(len(self.work_names)):
-			self.channel.send("cd "+self.dirs[i]+"\n)
-			if self.server_name = "항공의무관리":
-				time.sleep(5)
+  		for i in range(len(self.work_names)):
+				self.channel.send("cd "+self.dirs[i]+"\n)
+				if self.server_name = "항공의무관리":
+						time.sleep(5)
 
-			time.sleep(5)
-			checking_days = self._get_checkday(self.work_names[i])  #작업 일자 확인
-			
-			print(self.work_names[i] + " 작업 점검 -> ", end = '')
-			if(self._do_check(self.work_names[i], checking_days)):
-				self._error_check(self.work_names[i])
+				time.sleep(5)
+				checking_days = self._get_checkday(self.work_names[i])  #작업 일자 확인
+				
+				print(self.work_names[i] + " 작업 점검 -> ", end = '')
+
+				if(self._do_check(self.work_names[i], checking_days)):
+					self._error_check(self.work_names[i])
 
 	def _get_checkday(self, working_name):
 		yesterday_works  =  ["항공의무관리", "전자결재서명갱신", "설문조사관리체계", "설문조사업데이트"]
@@ -144,11 +148,11 @@ class checker:
 		return False
 
 	def _error_check(self, working_name):
-       	"""작업 에러 여부 체크"""
 		para_Handle.revc_clear(self.channel)
 		self.channel.send("find ./ -type f -mtime -1 -exec cat'{}' \;\n")   #가장 최근 파일 실행
 		logs = para_Handle.waitSterams(self.channel)
 		logs = logs.lower()
+		
 		if "error" in logs:
 			print("***에러 존재***, 로그를 확인하시오.\n")
 			self._print_log(logs, working_name)
